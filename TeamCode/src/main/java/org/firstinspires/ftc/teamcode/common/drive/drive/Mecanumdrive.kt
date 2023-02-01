@@ -41,7 +41,7 @@ class MecanumDrive : MecanumDrive {
         private val translationPID = PIDCoefficients(2.0, 0.0, 0.0)
         private val headingPID = PIDCoefficients(2.0, 0.0, 0.0)
 
-        private val motorVelocityPID = TODO()
+        private val motorVelocityPID: PIDFCoefficients? = null
 
         private const val lateralMultiplier = 1.0
 
@@ -78,7 +78,7 @@ class MecanumDrive : MecanumDrive {
 
     private var batteryVoltageSensor: VoltageSensor? = null
 
-    constructor(hardwareMap: HardwareMap) : super (
+    constructor(hardwareMap: HardwareMap) : super(
         kV,
         kA,
         kStatic,
@@ -107,7 +107,7 @@ class MecanumDrive : MecanumDrive {
         this.motors = arrayOf(frontLeft, backLeft, backRight, frontRight)
 
         for (motor in motors) {
-            val motorConfigurationType = motor.motorType.clone()
+            val motorConfigurationType = motor.motorType.clone() as MotorConfigurationType
             motorConfigurationType.achieveableMaxRPMFraction = 1.0
             motor.motorType = motorConfigurationType
         }
@@ -119,7 +119,7 @@ class MecanumDrive : MecanumDrive {
         setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE)
 
         if (runUsingDriveEncoders) {
-            setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, motorVelocityPID)
+            setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, motorVelocityPID!!)
         }
 
         frontLeft.direction = DcMotorSimple.Direction.REVERSE
@@ -130,16 +130,16 @@ class MecanumDrive : MecanumDrive {
         trajectorySequenceRunner = TrajectorySequenceRunner(follower as HolonomicPIDVAFollower, headingPID)
     }
 
-    fun trajectoryBuilder(startPose: Pose2d): TrajectorySequenceBuilder {
-        return TrajectorySequenceBuilder(startPose, velocityConstraint, accelerationConstraint)
+    fun trajectoryBuilder(startPose: Pose2d): TrajectoryBuilder {
+        return TrajectoryBuilder(startPose, false, velocityConstraint!!, accelerationConstraint!!)
     }
 
-    fun trajectoryBuilder(startPose: Pose2d, reversed: Boolean): TrajectorySequenceBuilder {
-        return TrajectorySequenceBuilder(startPose, reversed, velocityConstraint, accelerationConstraint)
+    fun trajectoryBuilder(startPose: Pose2d, reversed: Boolean): TrajectoryBuilder {
+        return TrajectoryBuilder(startPose, reversed, velocityConstraint!!, accelerationConstraint!!)
     }
 
-    fun trajectoryBuilder(startPose: Pose2d, startHeading: Double): TrajectorySequenceBuilder {
-        return TrajectorySequenceBuilder(startPose, startHeading, velocityConstraint, accelerationConstraint)
+    fun trajectoryBuilder(startPose: Pose2d, startHeading: Double): TrajectoryBuilder {
+        return TrajectoryBuilder(startPose, startHeading, velocityConstraint!!, accelerationConstraint!!)
     }
 
     fun trajectorySequenceBuilder(startPose: Pose2d): TrajectorySequenceBuilder {
@@ -193,7 +193,7 @@ class MecanumDrive : MecanumDrive {
 
     fun update() {
         updatePoseEstimate()
-        var driveSignal = trajectorySequenceRunner!!.update(this.poseEstimate, this.poseVelocity!!)
+        val driveSignal = trajectorySequenceRunner!!.update(this.poseEstimate, this.poseVelocity!!) as DriveSignal
 
         if (driveSignal != null) {
             setDriveSignal(driveSignal)
