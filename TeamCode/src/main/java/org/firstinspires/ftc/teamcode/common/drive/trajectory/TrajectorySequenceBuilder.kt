@@ -110,12 +110,12 @@ class TrajectorySequenceBuilder {
         baseTurnConstraintMaxAngularVelocity: Double,
         baseTurnConstraintMaxAngularAcceleration: Double
     ) : this(
-            startPose,
-            null,
-            baseVelocityConstraint,
-            baseAccelerationConstraint,
-            baseTurnConstraintMaxAngularVelocity,
-            baseTurnConstraintMaxAngularAcceleration
+        startPose,
+        null,
+        baseVelocityConstraint,
+        baseAccelerationConstraint,
+        baseTurnConstraintMaxAngularVelocity,
+        baseTurnConstraintMaxAngularAcceleration
     )
 
     fun lineTo(endPosition: Vector2d): TrajectorySequenceBuilder {
