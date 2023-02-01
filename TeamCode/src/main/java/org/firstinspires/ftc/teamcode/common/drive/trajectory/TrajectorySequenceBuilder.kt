@@ -683,8 +683,7 @@ class TrajectorySequenceBuilder {
                 is TrajectorySegment -> {
                     val thisSegment = segment as TrajectorySegment
 
-                    val newMarkers: MutableList<TrajectoryMarker> = mutableListOf()
-                    newMarkers.addAll(sequenceSegments[segmentIndex].getMarkers()!!)
+                    val newMarkers = thisSegment.getTrajectory()?.markers as MutableList<TrajectoryMarker>
                     newMarkers.add(TrajectoryMarker(segmentOffsetTime, marker.callback))
 
                     newSegment = TrajectorySegment(
