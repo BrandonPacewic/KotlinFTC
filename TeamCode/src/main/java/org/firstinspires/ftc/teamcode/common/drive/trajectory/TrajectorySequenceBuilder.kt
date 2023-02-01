@@ -7,9 +7,14 @@ import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.acmerobotics.roadrunner.path.PathContinuityViolationException
 import com.acmerobotics.roadrunner.profile.MotionProfile
+import com.acmerobotics.roadrunner.profile.MotionProfileGenerator
+import com.acmerobotics.roadrunner.profile.MotionState
 import com.acmerobotics.roadrunner.trajectory.DisplacementMarker
+import com.acmerobotics.roadrunner.trajectory.DisplacementProducer
+import com.acmerobotics.roadrunner.trajectory.MarkerCallback
 import com.acmerobotics.roadrunner.trajectory.SpatialMarker
 import com.acmerobotics.roadrunner.trajectory.TemporalMarker
+import com.acmerobotics.roadrunner.trajectory.TimeProducer
 import com.acmerobotics.roadrunner.trajectory.Trajectory
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder
 import com.acmerobotics.roadrunner.trajectory.TrajectoryMarker
@@ -519,6 +524,154 @@ class TrajectorySequenceBuilder {
 
         lastTrajectoryDuration = builtTrajectory.duration()
         lastTrajectoryDisplacement = builtTrajectory.path.length()
+
+        return this
+    }
+
+    fun setTangent(tangent: Double): TrajectorySequenceBuilder {
+        this.setAbsoluteTangent = true
+        this.absoluteTangent = tangent
+
+        this.pushPath()
+
+        return this
+    }
+
+    fun setTangentOffset(tangentOffset: Double): TrajectorySequenceBuilder {
+        this.setAbsoluteTangent = true
+        this.absoluteTangent = tangentOffset
+
+        this.pushPath()
+
+        return this
+    }
+
+    fun setReversed(reversed: Boolean): TrajectorySequenceBuilder {
+        return this.setTangentOffset(if (reversed) Math.PI else 0.0)
+    }
+
+    fun setConstraints(
+        velocityConstraint: TrajectoryVelocityConstraint,
+        accelerationConstraint: TrajectoryAccelerationConstraint
+    ): TrajectorySequenceBuilder {
+        this.currentVelocityConstraint = velocityConstraint
+        this.currentAccelerationConstraint = accelerationConstraint
+
+        return this
+    }
+
+    fun setVelocityConstraint(velocityConstraint: TrajectoryVelocityConstraint): TrajectorySequenceBuilder {
+        this.currentVelocityConstraint = velocityConstraint
+
+        return this
+    }
+
+    fun resetVelocityConstraint(): TrajectorySequenceBuilder {
+        this.currentVelocityConstraint = this.baseVelocityConstraint
+
+        return this
+    }
+
+    fun setAccelerationConstraint(accelerationConstraint: TrajectoryAccelerationConstraint): TrajectorySequenceBuilder {
+        this.currentAccelerationConstraint = accelerationConstraint
+
+        return this
+    }
+
+    fun resetAccelerationConstraint(): TrajectorySequenceBuilder {
+        this.currentAccelerationConstraint = this.baseAccelerationConstraint
+
+        return this
+    }
+
+    fun setTurnConstraint(maxAngularVelocity: Double, maxAngularAcceleration: Double): TrajectorySequenceBuilder {
+        this.currentTurnConstraintMaxAngularVelocity = maxAngularVelocity
+        this.currentTurnConstraintMaxAngularAcceleration = maxAngularAcceleration
+
+        return this
+    }
+
+    fun resetTurnConstraint(): TrajectorySequenceBuilder {
+        this.currentTurnConstraintMaxAngularVelocity = this.baseTurnConstraintMaxAngularVelocity
+        this.currentTurnConstraintMaxAngularAcceleration = this.baseTurnConstraintMaxAngularAcceleration
+
+        return this
+    }
+
+    fun addTemporalMarker(callback: MarkerCallback): TrajectorySequenceBuilder {
+        return this.addTemporalMarker(currentDuration!!, callback)
+    }
+
+    fun addTemporalMarker(time: Double, callback: MarkerCallback): TrajectorySequenceBuilder {
+        return this.addTemporalMarker(0.0, time, callback)
+    }
+
+    fun addTemporalMarker(scale: Double, offset: Double, callback: MarkerCallback): TrajectorySequenceBuilder {
+        return this.addTemporalMarker({time -> scale * time + offset}, callback)
+    }
+
+    fun addTemporalMarker(timeProducer: TimeProducer, callback: MarkerCallback): TrajectorySequenceBuilder {
+        this.temporalMarkers.add(TemporalMarker(timeProducer, callback))
+
+        return this
+    }
+
+    fun addSpatialMarker(point: Vector2d, callback: MarkerCallback): TrajectorySequenceBuilder {
+        this.spatialMarkers.add(SpatialMarker(point, callback))
+
+        return this
+    }
+
+    fun addDisplacementMarker(callback: MarkerCallback): TrajectorySequenceBuilder {
+        return this.addDisplacementMarker(currentDisplacement!!, callback)
+    }
+
+    fun addDisplacementMarker(displacement: Double, callback: MarkerCallback): TrajectorySequenceBuilder {
+        return this.addDisplacementMarker(0.0, displacement, callback)
+    }
+
+    fun addDisplacementMarker(scale: Double, offset: Double, callback: MarkerCallback): TrajectorySequenceBuilder {
+        return this.addDisplacementMarker({displacement -> scale * displacement + offset}, callback)
+    }
+
+    fun addDisplacementMarker(displacementProducer: DisplacementProducer, callback: MarkerCallback): TrajectorySequenceBuilder {
+        this.displacementMarkers.add(DisplacementMarker(displacementProducer, callback))
+
+        return this
+    }
+
+    fun turn(angle: Double): TrajectorySequenceBuilder {
+        return this.turn(angle, currentTurnConstraintMaxAngularVelocity!!, currentTurnConstraintMaxAngularAcceleration!!)
+    }
+
+    fun turn(angle: Double, maxAngularVelocity: Double, maxAngularAcceleration: Double): TrajectorySequenceBuilder {
+        pushPath()
+
+        var turnProfile = MotionProfileGenerator.generateSimpleMotionProfile(
+            MotionState(lastPose!!.heading, 0.0, 0.0),
+            MotionState(lastPose!!.heading + angle, 0.0, 0.0),
+            maxAngularVelocity,
+            maxAngularAcceleration
+        )
+
+        sequenceSegments.add(TurnSegment(lastPose, angle, turnProfile, mutableListOf()))
+
+        lastPose = Pose2d(
+            lastPose!!.x, lastPose!!.y,
+            Angle.norm(lastPose!!.heading + angle)
+        )
+
+        currentDuration = currentDuration?.plus(turnProfile.duration())
+
+        return this
+    }
+
+    fun waitSeconds(seconds: Double): TrajectorySequenceBuilder {
+        pushPath()
+
+        sequenceSegments.add(WaitSegment(lastPose, seconds, mutableListOf()))
+
+        currentDuration = currentDuration?.plus(seconds)
 
         return this
     }
