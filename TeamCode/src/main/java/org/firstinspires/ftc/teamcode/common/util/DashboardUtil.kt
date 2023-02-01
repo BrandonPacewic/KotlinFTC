@@ -7,6 +7,7 @@ import com.acmerobotics.dashboard.canvas.Canvas
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.acmerobotics.roadrunner.path.Path
+
 import kotlin.math.ceil
 
 /**
@@ -39,7 +40,7 @@ class DashboardUtil {
             val dx = path.length() / (samples - 1)
 
             for (i in 0 until samples) {
-                val displacement = i * dx.toDouble()
+                val displacement = i * dx
                 val pose = path[displacement]
                 xPoints[i] = pose.x
                 yPoints[i] = pose.y

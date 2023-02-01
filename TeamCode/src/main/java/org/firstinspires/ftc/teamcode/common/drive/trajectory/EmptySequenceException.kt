@@ -6,4 +6,4 @@ package org.firstinspires.ftc.teamcode.common.drive.trajectory
 /**
  * Adapted from the Roadrunner quickstart
  */
-class EmptySequenceException : RuntimeException() { }
+class EmptySequenceException : RuntimeException()
