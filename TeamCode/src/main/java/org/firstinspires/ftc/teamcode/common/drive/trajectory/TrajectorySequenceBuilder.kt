@@ -676,6 +676,14 @@ class TrajectorySequenceBuilder {
         return this
     }
 
+    fun addTrajectory(trajectory: Trajectory): TrajectorySequenceBuilder {
+        pushPath()
+
+        sequenceSegments.add(TrajectorySegment(trajectory))
+
+        return this
+    }
+
     fun build(): TrajectorySequence {
         pushPath()
 

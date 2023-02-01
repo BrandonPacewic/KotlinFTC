@@ -25,6 +25,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType
 
+import org.firstinspires.ftc.teamcode.common.drive.localizer.StandardLocalizer
 import org.firstinspires.ftc.teamcode.common.drive.trajectory.TrajectorySequence
 import org.firstinspires.ftc.teamcode.common.drive.trajectory.TrajectorySequenceBuilder
 import org.firstinspires.ftc.teamcode.common.drive.trajectory.TrajectorySequenceRunner
@@ -39,6 +40,8 @@ class MecanumDrive : MecanumDrive {
     companion object {
         private val translationPID = PIDCoefficients(2.0, 0.0, 0.0)
         private val headingPID = PIDCoefficients(2.0, 0.0, 0.0)
+
+        private val motorVelocityPID = TODO()
 
         private const val lateralMultiplier = 1.0
 
@@ -104,14 +107,107 @@ class MecanumDrive : MecanumDrive {
         this.motors = arrayOf(frontLeft, backLeft, backRight, frontRight)
 
         for (motor in motors) {
-            val motorConfigurationType = motor.getMotorType().clone()
+            val motorConfigurationType = motor.motorType.clone()
             motorConfigurationType.achieveableMaxRPMFraction = 1.0
             motor.motorType = motorConfigurationType
         }
 
         if (runUsingDriveEncoders) {
-
+            setMode(DcMotor.RunMode.RUN_USING_ENCODER)
         }
+
+        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE)
+
+        if (runUsingDriveEncoders) {
+            setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, motorVelocityPID)
+        }
+
+        frontLeft.direction = DcMotorSimple.Direction.REVERSE
+        backLeft.direction = DcMotorSimple.Direction.REVERSE
+
+        this.localizer = StandardLocalizer(hardwareMap)
+
+        trajectorySequenceRunner = TrajectorySequenceRunner(follower as HolonomicPIDVAFollower, headingPID)
+    }
+
+    fun trajectoryBuilder(startPose: Pose2d): TrajectorySequenceBuilder {
+        return TrajectorySequenceBuilder(startPose, velocityConstraint, accelerationConstraint)
+    }
+
+    fun trajectoryBuilder(startPose: Pose2d, reversed: Boolean): TrajectorySequenceBuilder {
+        return TrajectorySequenceBuilder(startPose, reversed, velocityConstraint, accelerationConstraint)
+    }
+
+    fun trajectoryBuilder(startPose: Pose2d, startHeading: Double): TrajectorySequenceBuilder {
+        return TrajectorySequenceBuilder(startPose, startHeading, velocityConstraint, accelerationConstraint)
+    }
+
+    fun trajectorySequenceBuilder(startPose: Pose2d): TrajectorySequenceBuilder {
+        return TrajectorySequenceBuilder(
+            startPose, 
+            velocityConstraint, 
+            accelerationConstraint,
+            maxAngularVelocity,
+            maxAngularAcceleration,
+        )
+    }
+
+    fun turnAsync(angle: Double) {
+        trajectorySequenceRunner!!.followTrajectorySequenceAsync(
+            trajectorySequenceBuilder(this.poseEstimate)
+                .turn(angle)
+                .build()
+        )
+    }
+
+    fun turn(angle: Double) {
+        turnAsync(angle)
+        waitForIdle()
+    }
+
+    fun followTrajectoryAsync(trajectory: Trajectory) {
+        trajectorySequenceRunner!!.followTrajectorySequenceAsync(
+            trajectorySequenceBuilder(trajectory.start())
+                .addTrajectory(trajectory)
+                .build()
+        )
+    }
+
+    fun followTrajectory(trajectory: Trajectory) {
+        followTrajectoryAsync(trajectory)
+        waitForIdle()
+    }
+
+    fun followTrajectorySequenceAsync(trajectorySequence: TrajectorySequence) {
+        trajectorySequenceRunner!!.followTrajectorySequenceAsync(trajectorySequence)
+    }
+
+    fun followTrajectorySequence(trajectorySequence: TrajectorySequence) {
+        followTrajectorySequenceAsync(trajectorySequence)
+        waitForIdle()
+    }
+
+    fun getLastError(): Pose2d {
+        return trajectorySequenceRunner!!.lastPoseError
+    }
+
+    fun update() {
+        updatePoseEstimate()
+        var driveSignal = trajectorySequenceRunner!!.update(this.poseEstimate, this.poseVelocity!!)
+
+        if (driveSignal != null) {
+            setDriveSignal(driveSignal)
+        }
+    }
+
+    fun waitForIdle() {
+        while (!Thread.currentThread().isInterrupted && isBusy()) {
+            update()
+        }
+    }
+
+    fun isBusy(): Boolean {
+        return trajectorySequenceRunner!!.isBusy()
     }
 
     fun setMode(runMode: DcMotor.RunMode) {
@@ -164,9 +260,8 @@ class MecanumDrive : MecanumDrive {
         this.frontRight.power = frontRight
     }
 
-    override fun getRawExternalHeading(): Double {
-        return 0.0
-    }
+    override val rawExternalHeading: Double
+        get() = 0.0
 
     override fun getExternalHeadingVelocity(): Double {
         return 0.0

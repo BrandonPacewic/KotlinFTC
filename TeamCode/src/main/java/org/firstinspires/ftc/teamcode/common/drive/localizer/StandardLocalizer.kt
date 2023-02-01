@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.common.hardware.Encoder
  *
  * Adapted from the Roadrunner quickstart.
  */
-class Localizer(hardwareMap: HardwareMap) : ThreeTrackingWheelLocalizer(
+class StandardLocalizer(hardwareMap: HardwareMap) : ThreeTrackingWheelLocalizer(
         listOf(
                 Pose2d(0.0, LATERAL_DISTANCE / 2, 0.0), // left encoder
                 Pose2d(0.0, -LATERAL_DISTANCE / 2, 0.0), // right encoder
