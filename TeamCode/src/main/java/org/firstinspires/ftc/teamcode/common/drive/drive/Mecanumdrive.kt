@@ -36,7 +36,13 @@ import org.firstinspires.ftc.teamcode.common.util.DriveUtil
  *
  * Adapted from the Roadrunner quickstart.
  */
-class MecanumDrive : MecanumDrive {
+class MecanumDrive(hardwareMap: HardwareMap) : MecanumDrive(
+    kV,
+    kA,
+    kStatic,
+    trackWidth,
+    lateralMultiplier
+) {
     companion object {
         private val translationPID = PIDCoefficients(2.0, 0.0, 0.0)
         private val headingPID = PIDCoefficients(2.0, 0.0, 0.0)
@@ -61,6 +67,10 @@ class MecanumDrive : MecanumDrive {
         private const val kStatic = 0.0
 
         private const val runUsingDriveEncoders = false
+
+        private const val admissableErrorTranslation = 0.1 // in
+        private const val admissableErrorHeading = 1.0 // degrees
+        private const val admissableErrorTimeout = 0.3 // seconds
     }
 
     private var trajectorySequenceRunner: TrajectorySequenceRunner? = null
@@ -78,33 +88,26 @@ class MecanumDrive : MecanumDrive {
 
     private var batteryVoltageSensor: VoltageSensor? = null
 
-    constructor(hardwareMap: HardwareMap) : super(
-        kV,
-        kA,
-        kStatic,
-        trackWidth,
-        lateralMultiplier
-    ) {
-        this.follower = HolonomicPIDVAFollower(
+    init {
+        follower = HolonomicPIDVAFollower(
             translationPID,
             translationPID,
             headingPID,
             Pose2d(
-                0.1,
-                0.1,
-                Math.toRadians(1.0)
+                admissableErrorTranslation,
+                admissableErrorTranslation,
+                Math.toRadians(admissableErrorHeading)
             ),
-            1.0
+            admissableErrorTimeout
         )
-
+        
         batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next()
 
-        this.frontLeft = hardwareMap.get(DcMotorEx::class.java, "motorFrontLeft")
-        this.backLeft = hardwareMap.get(DcMotorEx::class.java, "motorBackLeft")
-        this.backRight = hardwareMap.get(DcMotorEx::class.java, "motorBackRight")
-        this.frontRight = hardwareMap.get(DcMotorEx::class.java, "motorFrontRight")
-
-        this.motors = arrayOf(frontLeft, backLeft, backRight, frontRight)
+        frontLeft = hardwareMap.get(DcMotorEx::class.java, "motorFrontLeft")
+        backLeft = hardwareMap.get(DcMotorEx::class.java, "motorBackLeft")
+        backRight = hardwareMap.get(DcMotorEx::class.java, "motorBackRight")
+        frontRight = hardwareMap.get(DcMotorEx::class.java, "motorFrontRight")
+        motors = arrayOf(frontLeft, backLeft, backRight, frontRight)
 
         for (motor in motors) {
             val motorConfigurationType = motor.motorType.clone() as MotorConfigurationType
@@ -124,9 +127,7 @@ class MecanumDrive : MecanumDrive {
 
         frontLeft.direction = DcMotorSimple.Direction.REVERSE
         backLeft.direction = DcMotorSimple.Direction.REVERSE
-
-        this.localizer = StandardLocalizer(hardwareMap)
-
+        localizer = StandardLocalizer(hardwareMap)
         trajectorySequenceRunner = TrajectorySequenceRunner(follower as HolonomicPIDVAFollower, headingPID)
     }
 
@@ -193,11 +194,9 @@ class MecanumDrive : MecanumDrive {
 
     fun update() {
         updatePoseEstimate()
-        val driveSignal = trajectorySequenceRunner!!.update(this.poseEstimate, this.poseVelocity!!) as DriveSignal
 
-        if (driveSignal != null) {
-            setDriveSignal(driveSignal)
-        }
+        val driveSignal = trajectorySequenceRunner!!.update(this.poseEstimate, this.poseVelocity!!) as DriveSignal
+        setDriveSignal(driveSignal)
     }
 
     fun waitForIdle() {
@@ -235,6 +234,21 @@ class MecanumDrive : MecanumDrive {
         }
     }
 
+    fun setWeightedDrivePower(drivePower: Pose2d) {
+        // Re-normalize the powers according to the weights.
+        val denominator = vXWeight * abs(drivePower.x) 
+            + vYWeight * abs(drivePower.y) 
+            + headingWeight * abs(drivePower.heading)
+
+        val driveVelocity = Pose2d(
+            vXWeight * drivePower.x,
+            vYWeight * drivePower.y,
+            headingWeight * drivePower.heading
+        ).div(denominator)
+
+        setDrivePower(driveVelocity)
+    }
+
     override fun getWheelPositions(): List<Double> {
         return listOf(
             frontLeft.currentPosition.toDouble(),
@@ -260,6 +274,9 @@ class MecanumDrive : MecanumDrive {
         this.frontRight.power = frontRight
     }
 
+    // For whatever reason Roadrunner's MecanumDrive class has this method set up in a weird way.
+    // Kotlin requires that we override it with this syntax.
+    // Note that the functionality is similar to `getExternalHeadingVelocity()` but provided in a different syntax.
     override val rawExternalHeading: Double
         get() = 0.0
 

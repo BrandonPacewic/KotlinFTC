@@ -647,7 +647,7 @@ class TrajectorySequenceBuilder {
     fun turn(angle: Double, maxAngularVelocity: Double, maxAngularAcceleration: Double): TrajectorySequenceBuilder {
         pushPath()
 
-        var turnProfile = MotionProfileGenerator.generateSimpleMotionProfile(
+        val turnProfile = MotionProfileGenerator.generateSimpleMotionProfile(
             MotionState(lastPose!!.heading, 0.0, 0.0),
             MotionState(lastPose!!.heading + angle, 0.0, 0.0),
             maxAngularVelocity,

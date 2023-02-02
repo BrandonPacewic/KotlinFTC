@@ -74,8 +74,8 @@ class Encoder {
      * @return encoder position
      */
     fun getCurrentPosition(): Int {
-        var multiplier = direction.getMultiplier()
-        var currentPosition = motor.getCurrentPosition() * multiplier
+        val multiplier = direction.getMultiplier()
+        val currentPosition = motor.currentPosition * multiplier
 
         if (currentPosition == lastPosition) {
             return currentPosition

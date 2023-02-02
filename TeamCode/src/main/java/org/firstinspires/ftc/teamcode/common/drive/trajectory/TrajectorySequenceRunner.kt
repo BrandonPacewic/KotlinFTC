@@ -85,8 +85,8 @@ class TrajectorySequenceRunner {
         var targetPose: Pose2d? = null
         var driveSignal: DriveSignal? = null
 
-        var telemetryPacket = TelemetryPacket()
-        var fieldOverlay = telemetryPacket.fieldOverlay()
+        val telemetryPacket = TelemetryPacket()
+        val fieldOverlay = telemetryPacket.fieldOverlay()
 
         var currentSegment: SequenceSegment? = null
 
@@ -222,9 +222,7 @@ class TrajectorySequenceRunner {
         }
 
         for (i in 0 until trajectorySequence.size()) {
-            val segment = trajectorySequence.get(i)
-
-            when (segment) {
+            when (val segment = trajectorySequence.get(i)) {
                 is TrajectorySegment -> {
                     fieldOverlay.setStrokeWidth(1)
                     fieldOverlay.setStroke(COLOR_INACTIVE_TRAJECTORY)
