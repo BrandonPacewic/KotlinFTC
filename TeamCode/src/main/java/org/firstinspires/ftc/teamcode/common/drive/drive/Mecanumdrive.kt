@@ -53,9 +53,9 @@ class MecanumDrive(hardwareMap: HardwareMap) : MecanumDrive(
 
         private const val lateralMultiplier = 1.0
 
-        private const val vXWeight = 1.0
-        private const val vYWeight = 1.0
-        private const val headingWeight = 1.0
+        private const val vXWeight = 0.7
+        private const val vYWeight = 0.7
+        private const val headingWeight = 0.8
 
         private const val maxAcceleration = 0.0
         private const val maxVelocity = 0.0
