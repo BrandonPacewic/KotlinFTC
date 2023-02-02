@@ -31,6 +31,8 @@ import org.firstinspires.ftc.teamcode.common.drive.trajectory.TrajectorySequence
 import org.firstinspires.ftc.teamcode.common.drive.trajectory.TrajectorySequenceRunner
 import org.firstinspires.ftc.teamcode.common.util.DriveUtil
 
+import kotlin.math.abs
+
 /**
  * Mecanum drive implementation using rev hardware.
  *
@@ -53,7 +55,7 @@ class MecanumDrive(hardwareMap: HardwareMap) : MecanumDrive(
 
         private const val vXWeight = 1.0
         private const val vYWeight = 1.0
-        private const val omegaWeight = 1.0
+        private const val headingWeight = 1.0
 
         private const val maxAcceleration = 0.0
         private const val maxVelocity = 0.0
