@@ -3,10 +3,11 @@
 
 package org.firstinspires.ftc.teamcode.common.drive.trajectory.sequenceSegment
 
-import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.profile.MotionProfile
 import com.acmerobotics.roadrunner.trajectory.TrajectoryMarker
 import com.acmerobotics.roadrunner.util.Angle
+
+import org.firstinspires.ftc.teamcode.common.geometry.Pose2d
 
 /**
  * Adapted from the Roadrunner quickstart

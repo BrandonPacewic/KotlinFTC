@@ -11,7 +11,6 @@ import com.acmerobotics.roadrunner.control.PIDCoefficients
 import com.acmerobotics.roadrunner.control.PIDFController
 import com.acmerobotics.roadrunner.drive.DriveSignal
 import com.acmerobotics.roadrunner.followers.TrajectoryFollower
-import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.profile.MotionState
 import com.acmerobotics.roadrunner.trajectory.Trajectory
 import com.acmerobotics.roadrunner.trajectory.TrajectoryMarker
@@ -21,6 +20,7 @@ import org.firstinspires.ftc.teamcode.common.drive.trajectory.sequenceSegment.Se
 import org.firstinspires.ftc.teamcode.common.drive.trajectory.sequenceSegment.TrajectorySegment
 import org.firstinspires.ftc.teamcode.common.drive.trajectory.sequenceSegment.TurnSegment
 import org.firstinspires.ftc.teamcode.common.drive.trajectory.sequenceSegment.WaitSegment
+import org.firstinspires.ftc.teamcode.common.geometry.Pose2d
 import org.firstinspires.ftc.teamcode.common.util.DashboardUtil
 
 import java.util.LinkedList
@@ -30,13 +30,13 @@ import java.util.LinkedList
  */
 @Config
 class TrajectorySequenceRunner {
-    val COLOR_INACTIVE_TRAJECTORY = "#4caf507a";
-    val COLOR_INACTIVE_TURN = "#7c4dff7a";
-    val COLOR_INACTIVE_WAIT = "#dd2c007a";
+    val COLOR_INACTIVE_TRAJECTORY = "#4caf507a"
+    val COLOR_INACTIVE_TURN = "#7c4dff7a"
+    val COLOR_INACTIVE_WAIT = "#dd2c007a"
 
-    val COLOR_ACTIVE_TRAJECTORY = "#4CAF50";
-    val COLOR_ACTIVE_TURN = "#7c4dff";
-    val COLOR_ACTIVE_WAIT = "#dd2c00";
+    val COLOR_ACTIVE_TRAJECTORY = "#4CAF50"
+    val COLOR_ACTIVE_TURN = "#7c4dff"
+    val COLOR_ACTIVE_WAIT = "#dd2c00"
 
     val COLOR_TARGET_POSE = "#4CAF50"
     val COLOR_POSE_HISTORY = "#3F51B5"

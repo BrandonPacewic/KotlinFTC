@@ -3,8 +3,6 @@
 
 package org.firstinspires.ftc.teamcode.common.drive.trajectory
 
-import com.acmerobotics.roadrunner.geometry.Pose2d
-import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.acmerobotics.roadrunner.path.PathContinuityViolationException
 import com.acmerobotics.roadrunner.profile.MotionProfile
 import com.acmerobotics.roadrunner.profile.MotionProfileGenerator
@@ -26,6 +24,8 @@ import org.firstinspires.ftc.teamcode.common.drive.trajectory.sequenceSegment.Se
 import org.firstinspires.ftc.teamcode.common.drive.trajectory.sequenceSegment.TrajectorySegment
 import org.firstinspires.ftc.teamcode.common.drive.trajectory.sequenceSegment.TurnSegment
 import org.firstinspires.ftc.teamcode.common.drive.trajectory.sequenceSegment.WaitSegment
+import org.firstinspires.ftc.teamcode.common.geometry.Pose2d
+import org.firstinspires.ftc.teamcode.common.geometry.Vector2d
 
 import kotlin.math.abs
 import kotlin.math.min

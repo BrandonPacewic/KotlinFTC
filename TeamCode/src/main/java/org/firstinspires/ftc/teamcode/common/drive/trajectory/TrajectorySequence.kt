@@ -3,9 +3,8 @@
 
 package org.firstinspires.ftc.teamcode.common.drive.trajectory
 
-import com.acmerobotics.roadrunner.geometry.Pose2d
-
 import org.firstinspires.ftc.teamcode.common.drive.trajectory.sequenceSegment.SequenceSegment
+import org.firstinspires.ftc.teamcode.common.geometry.Pose2d
 
 /**
  * Adapted from the Roadrunner quickstart
