@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.common.drive.geometry.Pose
 import org.firstinspires.ftc.teamcode.common.drive.geometry.Vector
 
 import java.util.function.DoubleSupplier
+import java.util.function.IntSupplier
 
 import kotlin.math.abs
 import kotlin.math.cos
@@ -25,9 +26,9 @@ import kotlin.math.sin
  * outside sensor for rotation detection. 
  */
 class TwoWheelLocalizer(
-        private val horizontalPosition: DoubleSupplier,
+        private val horizontalPosition: IntSupplier,
         horizontalEncoderPlacement: Pose,
-        private val verticalPosition: DoubleSupplier,
+        private val verticalPosition: IntSupplier,
         verticalEncoderPlacement: Pose,
         private val heading: DoubleSupplier
 ) {

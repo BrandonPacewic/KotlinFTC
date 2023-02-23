@@ -3,12 +3,18 @@
 
 package org.firstinspires.ftc.teamcode.common.hardware
 
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.HardwareMap
+import com.qualcomm.robotcore.hardware.IMU
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.teamcode.common.drive.mecanum.MecanumDrivetrain
 import org.firstinspires.ftc.teamcode.common.drive.localization.TwoWheelLocalizer
+import org.firstinspires.ftc.teamcode.common.drive.geometry.Pose
+
+import javax.annotation.concurrent.GuardedBy
 
 class Robot(
     hardwareMap: HardwareMap, 
@@ -18,6 +24,14 @@ class Robot(
         TELEOP,
         AUTO
     }
+
+    companion object ImuLock {
+        @GuardedBy("ImuLock")
+        lateinit var imu: IMU
+    }
+
+    var imuAngle: Double = 0.0
+    private var imuThread: Thread? = null
 
     var drive: MecanumDrivetrain
 
@@ -31,6 +45,15 @@ class Robot(
     init {
         drive = MecanumDrivetrain(hardwareMap)
 
+        synchronized(ImuLock) {
+            imu = hardwareMap.get(IMU::class.java, "imu")
+            val parameters = IMU.Parameters(RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+                RevHubOrientationOnRobot.UsbFacingDirection.UP
+            ))
+            imu.initialize(parameters)
+        }
+
         if (opMode == OpMode.AUTO) {
             // TODO: Update encoder names.
             horizontalEncoder = 
@@ -40,14 +63,49 @@ class Robot(
 
             // TODO: Reverse encoder directions if necessary.
 
-            // localizer = TwoWheelLocalizer()
+            localizer = TwoWheelLocalizer(
+                { horizontalEncoder!!.getCurrentPosition() },
+                Pose(-4.0, -4.0, 0.0),
+                { lateralEncoder!!.getCurrentPosition() },
+                Pose(4.0, 0.0, Math.toRadians(90.0)),
+                { getHeading() }
+            )
         }
     }
 
     /**
-     * Resets the localization encoders and the localizer.
+     * Starts the IMU thread.
+     *
+     * @param opMode The opMode to run the thread in.
+     */
+    fun startImuThread(opMode: LinearOpMode) {
+        imuThread = Thread {
+            while (!opMode.isStopRequested && opMode.opModeIsActive()) {
+                synchronized(ImuLock) {
+                    imuAngle = -imu.robotYawPitchRollAngles.getYaw(AngleUnit.RADIANS)
+                }
+            }
+        }
+        imuThread!!.start()
+    }
+
+    /**
+     * Gets the current heading angle of the robot.
+     * 
+     * @return The current heading angle of the robot in radians.
+     */
+    fun getHeading(): Double {
+        synchronized(ImuLock) {
+            return imuAngle
+        }
+    }
+
+    /**
+     * Resets the localization of the robot.
      */
     fun reset() {
+        imu.resetYaw()
+
         if (opMode == OpMode.AUTO) {
             horizontalEncoder!!.reset()
             lateralEncoder!!.reset()
