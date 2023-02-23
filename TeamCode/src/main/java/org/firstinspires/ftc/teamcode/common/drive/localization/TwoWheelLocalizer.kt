@@ -36,7 +36,7 @@ class TwoWheelLocalizer(
         private const val trackingWheelRadius = 1.0
 
         fun encoderTicksToInches(ticks: Double) =
-                trackingWheelRadius * 2 * Math.PI * ticks / ticksPerEncoderRevolution
+            trackingWheelRadius * 2 * Math.PI * ticks / ticksPerEncoderRevolution
 
         class InvalidEncoderPlacementException : RuntimeException(
             "The given encoder placement cannot support desired localization."
@@ -87,12 +87,6 @@ class TwoWheelLocalizer(
         val currentWheelPositions = getWheelPositions()
         val currentHeading = getHeading()
 
-        if (lastWheelPositions.isEmpty()) {
-            lastWheelPositions = currentWheelPositions
-            lastHeading = currentHeading
-            return
-        }
-
         val wheelDeltas = currentWheelPositions
             .zip(lastWheelPositions)
             .map { it.first - it.second }
@@ -102,6 +96,12 @@ class TwoWheelLocalizer(
 
         lastWheelPositions = currentWheelPositions
         lastHeading = currentHeading
+    }
+
+    fun reset() {
+        internalPose = Pose()
+        lastWheelPositions = doubleArrayOf(0.0, 0.0)
+        lastHeading = Double.NaN
     }
 
     fun getHeading() = heading.asDouble

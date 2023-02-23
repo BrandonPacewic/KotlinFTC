@@ -1,7 +1,7 @@
 // Copyright (c) Brandon Pacewic
 // SPDX-License-Identifier: MIT WITH FIRST-exception
 
-package org.firstinspires.ftc.teamcode.common.drive.drive.mecanum
+package org.firstinspires.ftc.teamcode.common.drive.mecanum
 
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx

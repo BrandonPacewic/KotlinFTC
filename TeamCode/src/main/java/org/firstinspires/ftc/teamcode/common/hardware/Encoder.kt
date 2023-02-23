@@ -3,6 +3,7 @@
 
 package org.firstinspires.ftc.teamcode.common.hardware
 
+import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 
 /**
@@ -23,4 +24,12 @@ class Encoder(private val motor: DcMotorEx) {
      * @return the current position of the encoder
      */
     fun getCurrentPosition() = motor.currentPosition * direction.multiplier
+
+    /**
+     * Resets the encoder position to zero.
+     */
+    fun reset() {
+        motor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        motor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+    }
 }
