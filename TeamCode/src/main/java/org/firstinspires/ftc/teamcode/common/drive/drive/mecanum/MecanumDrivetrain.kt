@@ -65,15 +65,19 @@ class MecanumDrivetrain(hardwareMap: HardwareMap) {
      * @param motorPowers List of motor powers.
      */
     fun setMotorPowers(motorPowers: List<Double>) {
-        if (motorPowers.size != motors.size) {
+        if (motorPowers.size != 4) {
             throw InvalidMotorCountException
         }
 
-        for (i in motors.indices) {
+        for (i in 0..3) {
             motors[i].power = motorPowers[i]
         }
     }
 
+    /**
+     * Thrown when the given list of motor powers does not math the count of
+     * motors.
+     */
     companion object InvalidMotorCountException : RuntimeException(
         "Input motor powers must be the same length as the number of motors."
     )

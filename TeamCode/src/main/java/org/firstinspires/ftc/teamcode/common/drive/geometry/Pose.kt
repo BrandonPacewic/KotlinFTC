@@ -3,6 +3,9 @@
 
 package org.firstinspires.ftc.teamcode.common.drive.geometry
 
+import kotlin.math.cos
+import kotlin.math.sin
+
 /**
  * Represents a 2D pose; contains a position and heading.
  */
@@ -15,6 +18,7 @@ data class Pose(
         : this(vector.x, vector.y, heading)
 
     fun vector() = Vector(x, y)
+    fun headingVector() = Vector(cos(heading), sin(heading))
 
     fun plus(other: Pose) = 
         Pose(x + other.x, y + other.y, heading + other.heading)
