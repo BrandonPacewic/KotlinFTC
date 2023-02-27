@@ -15,6 +15,9 @@ data class Vector(val x: Double = 0.0, val y: Double = 0.0) {
     fun times(scalar: Double) = Vector(x * scalar, y * scalar)
     fun div(scalar: Double) = Vector(x / scalar, y / scalar)
 
+    /**
+     * Rotates this vector by a given angle.
+     */
     fun rotated(angle: Double) = Vector(
         x * cos(angle) - y * sin(angle),
         x * sin(angle) + y * cos(angle)

@@ -16,6 +16,9 @@ import org.firstinspires.ftc.teamcode.common.drive.geometry.Pose
 
 import javax.annotation.concurrent.GuardedBy
 
+/**
+ * Robot controller class wrapping all hardware and subsystems.
+ */
 class Robot(
     hardwareMap: HardwareMap, 
     private val opMode: OpMode = OpMode.TELEOP

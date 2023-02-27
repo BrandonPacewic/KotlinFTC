@@ -13,8 +13,6 @@ import org.firstinspires.ftc.teamcode.common.drive.geometry.Pose
 
 /**
  * Controls mecanum drivetrain hardware.
- *
- * @param hardwareMap The hardware map of the current OpMode.
  */
 class MecanumDrivetrain(hardwareMap: HardwareMap) {
     private val frontLeft: DcMotorEx
@@ -52,8 +50,6 @@ class MecanumDrivetrain(hardwareMap: HardwareMap) {
     /**
      * Sets the power of the drivetrain motors taking a x, y, and heading power 
      * percentage.
-     *
-     * @param drivePower Power percentage input [0, 1].
      */
     fun setDrivePower(drivePower: Pose) {
         setMotorPowers(listOf(
@@ -68,8 +64,6 @@ class MecanumDrivetrain(hardwareMap: HardwareMap) {
      * Sets the power of the drivetrain motors taking a list of motor powers.
      * Note: The order of the motors goes clockwise starting from the front left 
      * motor.
-     *
-     * @param motorPowers List of motor powers.
      */
     fun setMotorPowers(motorPowers: List<Double>) {
         if (motorPowers.size != 4) {

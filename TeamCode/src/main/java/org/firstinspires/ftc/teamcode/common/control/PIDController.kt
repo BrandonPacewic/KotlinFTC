@@ -79,6 +79,13 @@ open class PIDController(
         return output
     }
 
+    /**
+     * First output calculation for the PID controller.
+     *
+     * Gets called when the first calculate() is called and starts the timer
+     * for the controller. The first output is solely based on the proportional
+     * term.
+     */
     open fun firstCalculate(
         currentPosition: Double, 
         targetPosition: Double
@@ -100,6 +107,13 @@ open class PIDController(
         return output
     }
 
+    /**
+     * Resets the PID controller.
+     *
+     * Only call this function when you want to completely reset the controller.
+     * This function should only be called when the task that the controller was
+     * initialized for is complete and being changed.
+     */
     fun reset() {
         currentError = 0.0
         lastError = 0.0

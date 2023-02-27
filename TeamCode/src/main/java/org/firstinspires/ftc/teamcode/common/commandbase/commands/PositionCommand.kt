@@ -8,8 +8,8 @@ import com.arcrobotics.ftclib.command.CommandBase
 import org.firstinspires.ftc.teamcode.common.control.PIDController
 import org.firstinspires.ftc.teamcode.common.drive.mecanum.MecanumDrivetrain
 import org.firstinspires.ftc.teamcode.common.drive.geometry.Pose
-import org.firstinspires.ftc.teamcode.common.drive.geometry.Vector
 import org.firstinspires.ftc.teamcode.common.drive.localization.TwoWheelLocalizer
+
 import kotlin.math.abs
 import kotlin.math.hypot
 
@@ -48,9 +48,9 @@ class PositionCommand(
         val voltage = drivetrain.voltage
 
         drivetrain.setDrivePower(Pose(
-            controllerOutput.x / voltage * 12.5,
-            controllerOutput.y / voltage * 12.5,
-            controllerOutput.heading / voltage * 12.5
+                (controllerOutput.x / voltage) * 12.5,
+                (controllerOutput.y / voltage) * 12.5,
+                (controllerOutput.heading / voltage) * 12.5
         ))
     }
 

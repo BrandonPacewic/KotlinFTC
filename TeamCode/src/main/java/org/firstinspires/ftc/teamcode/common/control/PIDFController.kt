@@ -62,6 +62,13 @@ class PIDFController(
         return output
     }
 
+    /**
+     * First output calculation for the PIDF controller.
+     *
+     * Gets called when the first calculate() is called and starts the timer
+     * for the controller. The first output is solely based on the proportional
+     * term.
+     */
     override fun firstCalculate(
         currentPosition: Double, 
         targetPosition: Double

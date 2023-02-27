@@ -36,9 +36,16 @@ class TwoWheelLocalizer(
         private const val ticksPerEncoderRevolution = 8192
         private const val trackingWheelRadius = 1.0
 
+        /**
+         * Converts traking wheel encoder ticks to inches.
+         */
         fun encoderTicksToInches(ticks: Double) =
             trackingWheelRadius * 2 * Math.PI * ticks / ticksPerEncoderRevolution
 
+        /**
+         * Thrown when the given positions of the trackingwheels does not allow
+         * for localization.
+         */
         class InvalidEncoderPlacementException : RuntimeException(
             "The given encoder placement cannot support desired localization."
         )
@@ -84,6 +91,11 @@ class TwoWheelLocalizer(
         }
     }
 
+    /**
+     * Updates the current pose estimate using the latest encoder readings.
+     *
+     * This function should be called periodically in a opmode's loop() method.
+     */
     fun update() {
         val currentWheelPositions = getWheelPositions()
         val currentHeading = getHeading()
@@ -99,19 +111,32 @@ class TwoWheelLocalizer(
         lastHeading = currentHeading
     }
 
+    /**
+     * Resets the current pose estimate to zero.
+     */
     fun reset() {
         internalPose = Pose()
         lastWheelPositions = doubleArrayOf(0.0, 0.0)
         lastHeading = Double.NaN
     }
 
+    /**
+     * Returns the outside sensor's heading.
+     */
     fun getHeading() = heading.asDouble
 
+    /**
+     * Returns the current tracking wheel encoder positions.
+     */
     private fun getWheelPositions() = doubleArrayOf(
         encoderTicksToInches(horizontalPosition.asDouble),
         encoderTicksToInches(verticalPosition.asDouble)
     )
 
+    /**
+     * Calculates the change in robot pose given the change in wheel positions
+     * and the change in heading.
+     */
     private fun calculatePoseDelta(
         wheelDeltas: List<Double>, 
         headingDelta: Double
@@ -129,6 +154,16 @@ class TwoWheelLocalizer(
         )
     }
 
+    /**
+     * Preforms a relative odometry update given the current robot pose and the
+     * change in robot pose.
+     *
+     * This function assumes that the robot was traveling at a constant
+     * velocity and that the change in the overall robot pose is small.
+     * 
+     * This assumption should always be true if update() is being called
+     * periodically.
+     */
     private fun relativeOdometryUpdate(
         currentRobotPose: Pose,
         robotPoseDelta: Pose
