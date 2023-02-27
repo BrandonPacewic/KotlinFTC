@@ -34,6 +34,13 @@ open class PIDController(
         this.minOutput = minOutput
     }
 
+    constructor(
+        kP: Double, 
+        kI: Double, 
+        kD: Double, 
+        maxOutput: Double
+    ) : this(kP, kI, kD, maxOutput, -maxOutput)
+
     /**
      * Calculates the output of the PID controller based on the current vs
      * target position.

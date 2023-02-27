@@ -27,5 +27,19 @@ data class Pose(
     fun times(scalar: Double) = Pose(x * scalar, y * scalar, heading * scalar)
     fun div(scalar: Double) = Pose(x / scalar, y / scalar, heading / scalar)
 
+    fun clip(min: Pose, max: Pose) {
+        if (x < min.x) x = min.x
+        if (y < min.y) y = min.y
+        if (heading < min.heading) heading = min.heading
+
+        if (x > max.x) x = max.x
+        if (y > max.y) y = max.y
+        if (heading > max.heading) heading = max.heading
+    }
+
+    fun clip(clip: Pose) {
+        clip(-clip, clip)
+    }
+
     override fun toString() = String.format("(%.3f, %.3f, %.3f)", x, y, heading)
 }
