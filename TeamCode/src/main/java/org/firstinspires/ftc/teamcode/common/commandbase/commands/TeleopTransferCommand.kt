@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.common.drive.localization.TwoWheelLocalize
 import org.firstinspires.ftc.teamcode.common.hardware.Robot
 
 class TeleopTransferCommand(robot: Robot) : SequentialCommandGroup(
-    InstantCommand {
+    InstantCommand({
         TwoWheelLocalizer.imuOffset = robot.localizer!!.getHeading()
-    }
+    })
 )
