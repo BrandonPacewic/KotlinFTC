@@ -6,9 +6,14 @@ package org.firstinspires.ftc.teamcode.common.drive.swerve
 import com.qualcomm.robotcore.hardware.CRServoImplEx
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
+import com.qualcomm.robotcore.hardware.PwmControl
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeRadians;
 import org.firstinspires.ftc.teamcode.common.control.PIDController
+import org.firstinspires.ftc.teamcode.common.hardware.AnalogEncoder
+
+import kotlin.math.abs
+import kotlin.math.sign
 
 /**
  * Controls a single coaxial swerve module.
@@ -20,39 +25,68 @@ import org.firstinspires.ftc.teamcode.common.control.PIDController
 class CoaxialSwerveModule(
     var driveMotor: DcMotorEx,
     var rotationalServo: CRServoImplEx,
+    var rotationalEncoder: AnalogEncoder
 ) {
-    /**
-     * Values specific to the hardware controling the rotation of the wheel
-     * controled by the module.
-     */
-    companion object {
-        const val wheelRadius = 1.0
-        const val gearRatio = 1.0
-        const val encoderTicksPerRevolution = 1.0
-
-        
-        /**
-         * Converts the rotational encoder ticks to inches.
-         */
-        fun encoderTicksToInches(ticks: Int) =
-            wheelRadius * 2 * Math.PI * ticks / ticksPerEncoderRevolution
-    }
-
     var rotationalPIDController = PIDController(0.0, 0.0, 0.0)
     var kStatic = 0.0
+    var kStaticCutoff = 0.02
 
     var moduleRotation = 0.0
         get() = normalizeRadians(field - Math.PI)
     var targetRotation = 0.0
         get() = normalizeRadians(field - Math.PI)
 
+    /**
+     * Stores whether the wheel is flipped or not.
+     *
+     * This is an optimization as it is never optimal to spin the wheel
+     * 180+ degrees to get to the target angle.
+     */
+    enum class WheelState(val multiplier: Int) {
+        NORMAL(1),
+        FLIPPED(-1)
+    }
+
+    var wheelState = WheelState.NORMAL
+
+    var drivePower: Double
+        get() = driveMotor.power
+        set(value) {
+            driveMotor.power = value * wheelState.multiplier
+        }
+
     init {
-        var motorConfigurationType = driveMotor.motorType.clone()
+        val motorConfigurationType = driveMotor.motorType.clone()
         motorConfigurationType.achieveableMaxRPMFraction = 1.0
         driveMotor.motorType = motorConfigurationType
         driveMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
-        driveMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
 
-        servo.setPwmRange(500, 2500, 5000)
+        rotationalServo.pwmRange = PwmControl.PwmRange(500.0, 2500.0, 5000.0)
+    }
+
+    /**
+     * Updates the module wheel angle.
+     */
+    fun update() {
+        moduleRotation = rotationalEncoder.getCurrentPosition()
+        var error = normalizeRadians(targetRotation - moduleRotation)
+        val localTargetRotation: Double
+
+        if (abs(error) > Math.PI / 2) {
+            localTargetRotation = normalizeRadians(targetRotation - Math.PI)
+            wheelState = WheelState.FLIPPED
+        } else {
+            localTargetRotation = targetRotation
+            wheelState = WheelState.NORMAL
+        }
+
+        error = normalizeRadians(localTargetRotation - moduleRotation)
+        var power = rotationalPIDController.calculate(0.0, error)
+        
+        if (abs(error) > kStaticCutoff) {
+            power += kStatic
+        }
+
+        rotationalServo.power = power * sign(power)
     }
 }
