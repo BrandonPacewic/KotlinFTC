@@ -20,8 +20,6 @@ class Encoder(private val motor: DcMotorEx) {
 
     /**
      * Returns the current position of the encoder.
-     *
-     * @return the current position of the encoder
      */
     fun getCurrentPosition() = motor.currentPosition * direction.multiplier
 

@@ -36,10 +36,12 @@ class TwoWheelLocalizer(
         private const val ticksPerEncoderRevolution = 8192
         private const val trackingWheelRadius = 1.0
 
+        var imuOffset = 0.0
+
         /**
          * Converts traking wheel encoder ticks to inches.
          */
-        fun encoderTicksToInches(ticks: Double) =
+        fun encoderTicksToInches(ticks: Int) =
             trackingWheelRadius * 2 * Math.PI * ticks / ticksPerEncoderRevolution
 
         /**
@@ -123,14 +125,14 @@ class TwoWheelLocalizer(
     /**
      * Returns the outside sensor's heading.
      */
-    fun getHeading() = heading.asDouble
+    fun getHeading() = heading.asDouble - imuOffset
 
     /**
      * Returns the current tracking wheel encoder positions.
      */
     private fun getWheelPositions() = doubleArrayOf(
-        encoderTicksToInches(horizontalPosition.asDouble),
-        encoderTicksToInches(verticalPosition.asDouble)
+        encoderTicksToInches(horizontalPosition.asInt),
+        encoderTicksToInches(verticalPosition.asInt)
     )
 
     /**

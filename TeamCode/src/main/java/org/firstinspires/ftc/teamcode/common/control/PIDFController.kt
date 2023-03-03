@@ -67,7 +67,7 @@ class PIDFController(
      *
      * Gets called when the first calculate() is called and starts the timer
      * for the controller. The first output is solely based on the proportional
-     * term.
+     * and feedforward term.
      */
     override fun firstCalculate(
         currentPosition: Double, 

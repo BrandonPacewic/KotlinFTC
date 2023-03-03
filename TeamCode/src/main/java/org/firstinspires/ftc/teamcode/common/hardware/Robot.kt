@@ -78,8 +78,6 @@ class Robot(
 
     /**
      * Starts the IMU thread.
-     *
-     * @param opMode The opMode to run the thread in.
      */
     fun startImuThread(opMode: LinearOpMode) {
         imuThread = Thread {
@@ -94,8 +92,6 @@ class Robot(
 
     /**
      * Gets the current heading angle of the robot.
-     * 
-     * @return The current heading angle of the robot in radians.
      */
     fun getHeading(): Double {
         synchronized(ImuLock) {
