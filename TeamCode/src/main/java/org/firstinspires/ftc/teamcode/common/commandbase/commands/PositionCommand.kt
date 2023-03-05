@@ -6,7 +6,7 @@ package org.firstinspires.ftc.teamcode.common.commandbase.commands
 import com.arcrobotics.ftclib.command.CommandBase
 
 import org.firstinspires.ftc.teamcode.common.control.PIDController
-import org.firstinspires.ftc.teamcode.common.drive.mecanum.MecanumDrivetrain
+import org.firstinspires.ftc.teamcode.common.drive.drivetrain.Drivetrain
 import org.firstinspires.ftc.teamcode.common.drive.geometry.Pose
 import org.firstinspires.ftc.teamcode.common.drive.localization.TwoWheelLocalizer
 
@@ -18,7 +18,7 @@ import kotlin.math.hypot
  * the translational and rotational inputs.
  */
 class PositionCommand(
-    var drivetrain: MecanumDrivetrain,
+    var drivetrain: Drivetrain,
     var localizer: TwoWheelLocalizer,
     var targetPosition: Pose,
 ): CommandBase() {

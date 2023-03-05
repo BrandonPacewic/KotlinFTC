@@ -1,29 +1,24 @@
 // Copyright (c) Brandon Pacewic
 // SPDX-License-Identifier: MIT WITH FIRST-exception
 
-package org.firstinspires.ftc.teamcode.common.drive.mecanum
+package org.firstinspires.ftc.teamcode.common.drive.drivetrain
 
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
-import com.qualcomm.robotcore.hardware.VoltageSensor
 
 import org.firstinspires.ftc.teamcode.common.drive.geometry.Pose
 
 /**
  * Controls mecanum drivetrain hardware.
  */
-class MecanumDrivetrain(hardwareMap: HardwareMap) {
+class MecanumDrivetrain(hardwareMap: HardwareMap) : Drivetrain(hardwareMap) {
     private val frontLeft: DcMotorEx
     private val frontRight: DcMotorEx
     private val backRight: DcMotorEx
     private val backLeft: DcMotorEx
     private val motors: List<DcMotorEx>
-
-    private val voltageSensor: VoltageSensor
-    val voltage: Double
-        get() = voltageSensor.voltage
 
     init {
         frontLeft = hardwareMap.get(DcMotorEx::class.java, "motorFrontLeft")
@@ -43,15 +38,13 @@ class MecanumDrivetrain(hardwareMap: HardwareMap) {
         frontLeft.direction = DcMotorSimple.Direction.REVERSE
         backRight.direction = DcMotorSimple.Direction.REVERSE
         frontRight.direction = DcMotorSimple.Direction.REVERSE
-
-        voltageSensor = hardwareMap.voltageSensor.iterator().next()
     }
 
     /**
      * Sets the power of the drivetrain motors taking a x, y, and heading power 
      * percentage.
      */
-    fun setDrivePower(drivePower: Pose) {
+    override fun setDrivePower(drivePower: Pose) {
         setMotorPowers(listOf(
             drivePower.x + drivePower.y + drivePower.heading,
             drivePower.x - drivePower.y - drivePower.heading,
@@ -62,10 +55,11 @@ class MecanumDrivetrain(hardwareMap: HardwareMap) {
 
     /**
      * Sets the power of the drivetrain motors taking a list of motor powers.
+     *
      * Note: The order of the motors goes clockwise starting from the front left 
      * motor.
      */
-    fun setMotorPowers(motorPowers: List<Double>) {
+    private fun setMotorPowers(motorPowers: List<Double>) {
         if (motorPowers.size != 4) {
             throw InvalidMotorCountException
         }

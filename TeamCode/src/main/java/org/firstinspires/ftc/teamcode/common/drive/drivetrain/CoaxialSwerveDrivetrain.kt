@@ -1,13 +1,12 @@
 // Copyright (c) Brandon Pacewic
 // SPDX-License-Identifier: MIT WITH FIRST-exception
 
-package org.firstinspires.ftc.teamcode.common.drive.swerve
+package org.firstinspires.ftc.teamcode.common.drive.drivetrain
 
 import com.qualcomm.robotcore.hardware.AnalogInput
 import com.qualcomm.robotcore.hardware.CRServoImplEx
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.HardwareMap
-import com.qualcomm.robotcore.hardware.VoltageSensor
 
 import org.firstinspires.ftc.teamcode.common.drive.geometry.Pose
 import org.firstinspires.ftc.teamcode.common.hardware.AnalogEncoder
@@ -23,7 +22,7 @@ import kotlin.math.hypot
 class CoaxialSwerveDrivetrain(
     hardwareMap: HardwareMap, 
     var opMode: OpMode = OpMode.TELEOP
-) {
+) : Drivetrain(hardwareMap) {
     companion object {
         const val frontLeftEncoderOffset = 0.0
         const val frontRightEncoderOffset = 0.0
@@ -43,10 +42,6 @@ class CoaxialSwerveDrivetrain(
     private val backRight: CoaxialSwerveModule
     private val backLeft: CoaxialSwerveModule
     private val modules: List<CoaxialSwerveModule>
-
-    private val voltageSensor: VoltageSensor
-    val voltage: Double
-        get() = voltageSensor.voltage
 
     var trackWidth = 0.0
     var wheelBase = 0.0
@@ -81,12 +76,14 @@ class CoaxialSwerveDrivetrain(
             ).zero(backLeftEncoderOffset))
 
         modules = listOf(frontLeft, frontRight, backRight, backLeft)
-
-        voltageSensor = hardwareMap.voltageSensor.iterator().next()
     }
 
     /**
      * Updates each module's wheel angle.
+     *
+     * IMPORTANT: update() must be called periodically while running a opMode.
+     * Without this the wheel angles will not be updated / controlled
+     * correctly as it is running a time based PID controller.
      */
     fun update() {
         modules.forEach {
@@ -98,7 +95,7 @@ class CoaxialSwerveDrivetrain(
      * Sets the power of the drivetrain motors taking a x, y, and heading power 
      * percentage.
      */
-    fun setDrivePower(drivePower: Pose) {
+    override fun setDrivePower(drivePower: Pose) {
         val grid = listOf(
             drivePower.x - drivePower.heading * (trackWidth / wheelBase),
             drivePower.x + drivePower.heading * (trackWidth / wheelBase),
@@ -123,10 +120,11 @@ class CoaxialSwerveDrivetrain(
 
     /**
      * Sets the power of the drivetrain modules taking a list of modules powers.
-     * Note: The order of the modules goes clockwise starting from the front left 
-     * modules.
+     *
+     * Note: The order of the modules goes clockwise starting from the front
+     * left modules.
      */
-    fun setModulePowers(motorPowers: MutableList<Double>) {
+    private fun setModulePowers(motorPowers: MutableList<Double>) {
         if (motorPowers.size != modules.size) {
             throw InvalidModuleCountException()
         }
@@ -144,10 +142,11 @@ class CoaxialSwerveDrivetrain(
 
     /**
      * Sets the angle of the drivetrain modules taking a list of module angles.
-     * Note: The order of the modules goes clockwise starting from the front left
-     * module.
+     *
+     * Note: The order of the modules goes clockwise starting from the front
+     * left module.
      */
-    fun setModuleAngles(moduleAngles: List<Double>) {
+    private fun setModuleAngles(moduleAngles: List<Double>) {
         if (moduleAngles.size != modules.size) {
             throw InvalidModuleCountException()
         }

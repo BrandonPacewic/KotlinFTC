@@ -10,9 +10,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.IMU
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
-import org.firstinspires.ftc.teamcode.common.drive.mecanum.MecanumDrivetrain
-import org.firstinspires.ftc.teamcode.common.drive.localization.TwoWheelLocalizer
+import org.firstinspires.ftc.teamcode.common.drive.drivetrain.Drivetrain
+import org.firstinspires.ftc.teamcode.common.drive.drivetrain.MecanumDrivetrain
 import org.firstinspires.ftc.teamcode.common.drive.geometry.Pose
+import org.firstinspires.ftc.teamcode.common.drive.localization.TwoWheelLocalizer
 
 import javax.annotation.concurrent.GuardedBy
 
@@ -36,7 +37,7 @@ class Robot(
     var imuAngle: Double = 0.0
     private var imuThread: Thread? = null
 
-    var drive: MecanumDrivetrain
+    var drive: Drivetrain
 
     // Encoders and localizer are only instantiated in autonomous as it
     // costs unnecessary time in teleop as the localizer is not used during

@@ -1,14 +1,14 @@
 // Copyright (c) Brandon Pacewic
 // SPDX-License-Identifier: MIT WITH FIRST-exception
 
-package org.firstinspires.ftc.teamcode.common.drive.swerve
+package org.firstinspires.ftc.teamcode.common.drive.drivetrain
 
 import com.qualcomm.robotcore.hardware.CRServoImplEx
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.PwmControl
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeRadians;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeRadians
 import org.firstinspires.ftc.teamcode.common.control.PIDController
 import org.firstinspires.ftc.teamcode.common.hardware.AnalogEncoder
 
