@@ -22,5 +22,13 @@ abstract class Drivetrain(hardwareMap: HardwareMap) {
         voltageSensor = hardwareMap.voltageSensor.iterator().next()
     }
 
+    /**
+     * Sets the power of the drivetrain motors taking a x, y, and heading power.
+     */
     abstract fun setDrivePower(drivePower: Pose)
+
+    /**
+     * Sets the power of the drivetrain motors taking a list of motor powers.
+     */
+    abstract fun setMotorPowers(motorPowers: List<Double>)
 }

@@ -59,7 +59,7 @@ class MecanumDrivetrain(hardwareMap: HardwareMap) : Drivetrain(hardwareMap) {
      * Note: The order of the motors goes clockwise starting from the front left 
      * motor.
      */
-    private fun setMotorPowers(motorPowers: List<Double>) {
+    override fun setMotorPowers(motorPowers: List<Double>) {
         if (motorPowers.size != 4) {
             throw InvalidMotorCountException
         }

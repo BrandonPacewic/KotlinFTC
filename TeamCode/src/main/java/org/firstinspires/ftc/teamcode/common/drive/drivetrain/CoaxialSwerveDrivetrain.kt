@@ -103,7 +103,7 @@ class CoaxialSwerveDrivetrain(
             drivePower.y + drivePower.heading * (wheelBase / trackWidth)
         )
 
-        setModulePowers(mutableListOf(
+        setMotorPowers(listOf(
             hypot(grid[1], grid[3]),
             hypot(grid[1], grid[2]),
             hypot(grid[0], grid[2]),
@@ -124,7 +124,9 @@ class CoaxialSwerveDrivetrain(
      * Note: The order of the modules goes clockwise starting from the front
      * left modules.
      */
-    private fun setModulePowers(motorPowers: MutableList<Double>) {
+    override fun setMotorPowers(motorPowers: List<Double>) {
+        val motorPowers = motorPowers as MutableList<Double>
+
         if (motorPowers.size != modules.size) {
             throw InvalidModuleCountException()
         }
