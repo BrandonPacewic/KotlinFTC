@@ -14,6 +14,6 @@ import org.firstinspires.ftc.teamcode.common.hardware.Robot
 @Autonomous(name = "Template Auto")
 class TemplateAuto : LinearOpMode() {
     override fun runOpMode() {
-        val robot = Robot(hardwareMap)
+        val robot = Robot(hardwareMap, Robot.OpMode.AUTO)
     }
 }
