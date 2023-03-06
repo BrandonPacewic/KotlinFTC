@@ -5,13 +5,15 @@ package org.firstinspires.ftc.teamcode.opmode.teleop
 
 import com.arcrobotics.ftclib.command.CommandOpMode
 import com.arcrobotics.ftclib.command.CommandScheduler
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 
 import org.firstinspires.ftc.teamcode.common.drive.geometry.Pose
 import org.firstinspires.ftc.teamcode.common.hardware.Robot
 
-@TeleOp(name = "OpMode")
-class OpMode : CommandOpMode() {
+@Disabled
+@TeleOp(name = "Template OpMode")
+class TemplateOpMode : CommandOpMode() {
     lateinit var robot: Robot
 
     override fun initialize() {
