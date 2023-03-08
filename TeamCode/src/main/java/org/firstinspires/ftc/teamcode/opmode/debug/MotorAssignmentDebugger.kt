@@ -43,7 +43,7 @@ import org.firstinspires.ftc.teamcode.common.hardware.Robot
  *                \.          .'              (A/X)        \   (B/O)
  *                  \________/
  *
- * Uncomment the @Disabled tag below to use this opmode.
+ * Remove the @Disabled tag below to use this opmode.
  */
 @Disabled
 @TeleOp(name = "Motor Assignment Debugger")
