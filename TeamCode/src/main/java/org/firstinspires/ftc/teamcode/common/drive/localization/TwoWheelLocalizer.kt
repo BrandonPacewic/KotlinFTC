@@ -31,21 +31,19 @@ class TwoWheelLocalizer(
         private val verticalPosition: IntSupplier,
         verticalEncoderPlacement: Pose,
         private val heading: DoubleSupplier
-) {
+) : Localizer {
     companion object {
         private const val ticksPerEncoderRevolution = 8192
         private const val trackingWheelRadius = 1.0
 
-        var imuOffset = 0.0
-
         /**
-         * Converts traking wheel encoder ticks to inches.
+         * Converts tracking wheel encoder ticks to inches.
          */
         fun encoderTicksToInches(ticks: Int) =
             trackingWheelRadius * 2 * Math.PI * ticks / ticksPerEncoderRevolution
 
         /**
-         * Thrown when the given positions of the trackingwheels does not allow
+         * Thrown when the given positions of the tracking wheels does not allow
          * for localization.
          */
         class InvalidEncoderPlacementException : RuntimeException(
@@ -59,7 +57,7 @@ class TwoWheelLocalizer(
     private val forwardSolver: DecompositionSolver
 
     private var internalPose = Pose()
-    var poseEstimate: Pose
+    override var poseEstimate: Pose
         get() = internalPose
         set(value) {
             internalPose = value
@@ -98,7 +96,7 @@ class TwoWheelLocalizer(
      *
      * This function should be called periodically in a opmode's loop() method.
      */
-    fun update() {
+    override fun update() {
         val currentWheelPositions = getWheelPositions()
         val currentHeading = getHeading()
 
@@ -116,7 +114,7 @@ class TwoWheelLocalizer(
     /**
      * Resets the current pose estimate to zero.
      */
-    fun reset() {
+    override fun reset() {
         internalPose = Pose()
         lastWheelPositions = doubleArrayOf(0.0, 0.0)
         lastHeading = Double.NaN
@@ -125,7 +123,7 @@ class TwoWheelLocalizer(
     /**
      * Returns the outside sensor's heading.
      */
-    fun getHeading() = heading.asDouble - imuOffset
+    override fun getHeading() = heading.asDouble - Localizer.headingOffset
 
     /**
      * Returns the current tracking wheel encoder positions.

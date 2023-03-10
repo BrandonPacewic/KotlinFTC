@@ -13,6 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.teamcode.common.drive.drivetrain.Drivetrain
 import org.firstinspires.ftc.teamcode.common.drive.drivetrain.MecanumDrivetrain
 import org.firstinspires.ftc.teamcode.common.drive.geometry.Pose
+import org.firstinspires.ftc.teamcode.common.drive.localization.Localizer
 import org.firstinspires.ftc.teamcode.common.drive.localization.TwoWheelLocalizer
 
 import javax.annotation.concurrent.GuardedBy
@@ -44,7 +45,7 @@ class Robot(
     // driver control.
     var horizontalEncoder: Encoder? = null
     var lateralEncoder: Encoder? = null
-    var localizer: TwoWheelLocalizer? = null
+    var localizer: Localizer? = null
 
     init {
         drive = MecanumDrivetrain(hardwareMap)
