@@ -10,9 +10,9 @@ import kotlin.math.sin
  * Represents a 2D pose; contains a position and heading.
  */
 data class Pose(
-    val x: Double = 0.0, 
-    val y: Double = 0.0, 
-    val heading: Double = 0.0
+    var x: Double = 0.0,
+    var y: Double = 0.0,
+    var heading: Double = 0.0
 ) {
     constructor(vector: Vector, heading: Double = 0.0) 
         : this(vector.x, vector.y, heading)
@@ -48,7 +48,7 @@ data class Pose(
     }
 
     fun clip(clip: Pose) {
-        clip(-clip, clip)
+        clip(Pose(-clip.x, -clip.y, -clip.heading), clip)
     }
 
     override fun toString() = String.format("(%.3f, %.3f, %.3f)", x, y, heading)

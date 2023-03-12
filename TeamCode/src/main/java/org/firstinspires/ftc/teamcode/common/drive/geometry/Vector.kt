@@ -9,7 +9,7 @@ import kotlin.math.sin
 /**
  * Represents a 2D vector; simply a point in 2D space.
  */
-data class Vector(val x: Double = 0.0, val y: Double = 0.0) {
+data class Vector(var x: Double = 0.0, var y: Double = 0.0) {
     fun plus(other: Vector) = Vector(x + other.x, y + other.y)
     fun minus(other: Vector) = Vector(x - other.x, y - other.y)
     fun times(scalar: Double) = Vector(x * scalar, y * scalar)
