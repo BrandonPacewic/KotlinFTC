@@ -49,8 +49,8 @@ class TankDrivetrain(hardwareMap: HardwareMap) : Drivetrain(hardwareMap) {
         setMotorPowers(listOf(
             drivePower.x,
             drivePower.y,
-            drivePower.x,
-            drivePower.y
+            drivePower.y,
+            drivePower.x
         ))
     }
 
