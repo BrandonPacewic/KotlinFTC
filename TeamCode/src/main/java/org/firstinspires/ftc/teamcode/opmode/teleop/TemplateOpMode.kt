@@ -3,17 +3,17 @@
 
 package org.firstinspires.ftc.teamcode.opmode.teleop
 
-import com.arcrobotics.ftclib.command.CommandOpMode
 import com.arcrobotics.ftclib.command.CommandScheduler
 import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 
+import org.firstinspires.ftc.teamcode.command.control.OpModeEx
 import org.firstinspires.ftc.teamcode.common.drive.geometry.Pose
 import org.firstinspires.ftc.teamcode.common.hardware.Robot
 
 @Disabled
 @TeleOp(name = "Template OpMode")
-class TemplateOpMode : CommandOpMode() {
+class TemplateOpMode : OpModeEx() {
     lateinit var robot: Robot
 
     override fun initialize() {
@@ -33,10 +33,5 @@ class TemplateOpMode : CommandOpMode() {
         )
 
         CommandScheduler.getInstance().run()
-    }
-
-    override fun reset() {
-        CommandScheduler.getInstance().reset()
-        robot.reset()
     }
 }
