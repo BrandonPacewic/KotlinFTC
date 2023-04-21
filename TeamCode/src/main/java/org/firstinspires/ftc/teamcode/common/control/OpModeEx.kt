@@ -24,7 +24,7 @@ abstract class OpModeEx : LinearOpMode() {
     /**
      * Called in the first OpMode loop.
      */
-    open fun start() {
+    open fun begin() {
         // Empty by default. Not required.
     }
 
@@ -51,7 +51,7 @@ abstract class OpModeEx : LinearOpMode() {
             return
         }
 
-        start()
+        begin()
 
         while (opModeIsActive() && !isStopRequested) {
             run()
