@@ -86,7 +86,7 @@ class TwoWheelLocalizer(
         inverseMatrix.setEntry(2, 2, 1.0)
         forwardSolver = LUDecomposition(inverseMatrix).solver
 
-        if (forwardSolver.isNonSingular) {
+        if (!forwardSolver.isNonSingular) {
             throw InvalidEncoderPlacementException()
         }
     }
