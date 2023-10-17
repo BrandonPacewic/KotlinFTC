@@ -7,7 +7,7 @@ import com.arcrobotics.ftclib.command.CommandScheduler
 import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 
-import org.firstinspires.ftc.teamcode.command.control.OpModeEx
+import org.firstinspires.ftc.teamcode.common.control.OpModeEx
 import org.firstinspires.ftc.teamcode.common.drive.geometry.Pose
 import org.firstinspires.ftc.teamcode.common.hardware.Robot
 
