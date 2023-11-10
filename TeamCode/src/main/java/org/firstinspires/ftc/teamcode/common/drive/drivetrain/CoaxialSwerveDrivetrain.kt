@@ -155,7 +155,7 @@ class CoaxialSwerveDrivetrain(
 
         for (i in 0..3) {
             // Each angle needs to be normalized.
-            modules[i].moduleRotation = moduleAngles[i] % (Math.PI * 2)
+            modules[i].targetRotation = moduleAngles[i] % (Math.PI * 2)
         }
     }
 }

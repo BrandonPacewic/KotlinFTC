@@ -46,6 +46,7 @@ class AnalogEncoder(private val encoder: AnalogInput) {
         }
 
         position *= (Math.PI * 2.0) - offset
+        position = Angle.norm(position)
 
         // Checks for incorrect values when close to zero.
         if (abs(Angle.normDelta(lastPosition)) > 0.1 || abs(Angle.normDelta(position)) < 1.0) {
