@@ -4,30 +4,27 @@
 package org.firstinspires.ftc.teamcode.common.control
 
 /**
- * Three term, time based PID controller.
+ * Two term PD controller.
  */
-open class PIDController(
+open class PDController(
     kP: Double,
-    kI: Double,
-    kD: Double,
-) : PIDFController(kP, kI, kD, 0.0) {
+    kD: Double
+) : PIDController(kP, 0.0, kD) {
     constructor(
         kP: Double,
-        kI: Double,
         kD: Double,
         maxOutput: Double,
         minOutput: Double
-    ) : this(kP, kI, kD) {
+    ) : this(kP, kD) {
         this.maxOutput = maxOutput
         this.minOutput = minOutput
     }
 
     constructor(
         kP: Double,
-        kI: Double,
         kD: Double,
         maxOutput: Double
-    ) : this(kP, kI, kD) {
+    ) : this(kP, kD) {
         this.maxOutput = maxOutput
         this.minOutput = -maxOutput
     }
