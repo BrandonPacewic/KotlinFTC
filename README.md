@@ -1,10 +1,9 @@
-# Kotlin FTC Quick Start
+# Kotlin FTC
 
-This is a template FTC project using Kotlin. You will notice that this repository also contains code from the [FTC SDK](https://github.com/FIRST-Tech-Challenge/FtcRobotController). This is done to simplify the setup process.
-
-## Getting Started
-
-1. Clone this repository
+My personal Kotlin library for FTC. This library contains everything under the sun for FTC programming. Is is designed
+to be used as part of the [FTC SDK](), which you will note is included as a part of this repository. This is done to
+simplify the process of getting started, interested in utilizing Kotlin for FTC? Well this may not be the best place
+to start, but I hope it helps.
 
 ## License
 
