@@ -1,4 +1,4 @@
-The Ftc Kotlin Quick Start is under the MIT License with FIRST Robotics Copyright Exception:
+This repository is under the MIT License with FIRST Robotics Copyright Exception:
 
 MIT License
 
