@@ -6,7 +6,7 @@ package org.firstinspires.ftc.teamcode.common.gamepad
 /**
  * Attaches a precise double / boolean state to a gamepadEx trigger.
  */
-class TriggerReader(gamepadEx: GamepadEx, trigger: GamepadTrigger, threshold: Double) {
+class TriggerReader(gamepadEx: GamepadEx, trigger: GamepadTrigger, private var threshold: Double) {
     private var lastState: Boolean
     private var currentState: Boolean
     private var triggerValueSupplier: () -> Double
