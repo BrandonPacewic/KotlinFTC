@@ -22,10 +22,10 @@ class DynamicMecanumDrive : OpModeEx() {
     override fun run() {
         drive.setDrivePower(
             Pose(
-                -gamepad1.left_stick_x.toDouble(),
-                -gamepad1.left_stick_y.toDouble(),
-                -gamepad1.right_stick_x.toDouble()
-            ).times(0.8 - (0.6 * gamepad1.right_trigger.toDouble()))
+                -gamepadEx1.leftStickX,
+                -gamepadEx1.leftStickY,
+                -gamepadEx1.rightStickX
+            ).times(0.8 - (0.6 * gamepadEx1.rightTrigger))
         )
     }
 }

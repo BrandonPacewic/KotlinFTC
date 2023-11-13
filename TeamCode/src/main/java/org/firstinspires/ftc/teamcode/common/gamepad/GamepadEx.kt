@@ -11,6 +11,49 @@ import kotlin.collections.HashMap
  * An extension of the FTC Gamepad class for more advanced functionality.
  */
 class GamepadEx(private var gamepad: Gamepad) {
+    val a: Boolean
+        get() = gamepad.a
+    val b: Boolean
+        get() = gamepad.b
+    val x: Boolean
+        get() = gamepad.x
+    val y: Boolean
+        get() = gamepad.y
+    val dpadUp: Boolean
+        get() = gamepad.dpad_up
+    val dpadDown: Boolean
+        get() = gamepad.dpad_down
+    val dpadLeft: Boolean
+        get() = gamepad.dpad_left
+    val dpadRight: Boolean
+        get() = gamepad.dpad_right
+    val leftBumper: Boolean
+        get() = gamepad.left_bumper
+    val rightBumper: Boolean
+        get() = gamepad.right_bumper
+    val leftStickButton: Boolean
+        get() = gamepad.left_stick_button
+    val rightStickButton: Boolean
+        get() = gamepad.right_stick_button
+    val back: Boolean
+        get() = gamepad.back
+    val start: Boolean
+        get() = gamepad.start
+
+    val leftStickX: Double
+        get() = gamepad.left_stick_x.toDouble()
+    val leftStickY: Double
+        get() = gamepad.left_stick_y.toDouble()
+    val rightStickX: Double
+        get() = gamepad.right_stick_x.toDouble()
+    val rightStickY: Double
+        get() = gamepad.right_stick_y.toDouble()
+
+    val leftTrigger: Double
+        get() = gamepad.left_trigger.toDouble()
+    val rightTrigger: Double
+        get() = gamepad.right_trigger.toDouble()
+
     private var buttonReaders: HashMap<GamepadButton, ButtonReader> = hashMapOf()
     private var triggerReaders: HashMap<GamepadTrigger, TriggerReader> = hashMapOf()
 
